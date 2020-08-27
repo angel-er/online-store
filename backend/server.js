@@ -11,7 +11,7 @@ server.set('port', PORT || 5000);
 server.use(morgan('dev'));
 server.use(express.urlencoded({extended: false}));
 
-// Routes
+// Routes.
 
 // Route Static
 server.get('/', (req, res) => {
