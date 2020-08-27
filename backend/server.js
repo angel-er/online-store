@@ -1,6 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
+const path = require('path');
 const {DB_URI, PORT} = require('./config/db');
+const {UsersRoutes} = require('./routes');
 
 const server = express();
 
@@ -12,8 +14,10 @@ server.use(morgan('dev'));
 server.use(express.urlencoded({extended: false}));
 
 // Routes.
+server.use('/api/users', UsersRoutes);
 
-// Route Static
+// Static
+console.log(path.join(__dirname, '../frontend/public'));
 server.get('/', (req, res) => {
   res.send({message: 'Welcome'});
 });
