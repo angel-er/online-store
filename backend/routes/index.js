@@ -1,3 +1,5 @@
 module.exports = {
-  UsersRoutes: require('./users.routes'),
+  UsersRouter: require('./users.routes'),
+  ProductRouter: require('./products.routes'),
+  CategoryRouter: require('./categories.routes'),
 };

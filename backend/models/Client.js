@@ -2,7 +2,7 @@ const {Schema, model} = require('mongoose');
 const validator = require('validator');
 const bcryptjs = require('bcryptjs');
 
-const UserSchema = new Schema(
+const ClientSchema = new Schema(
   {
     firstname: String,
     lastname: String,
@@ -37,36 +37,36 @@ const UserSchema = new Schema(
   {timestamps: true}
 );
 
-// UserSchema.methods.hashedPassword = async (password) => {
+// clientSchema.methods.hashedPassword = async (password) => {
 //   const salt = await bcryptjs.genSalt(10);
 
 //   return await bcryptjs.hash(password, salt);
 // };
 
-UserSchema.methods.matchPassword = async function (password) {
-  const user = this;
+ClientSchema.methods.matchPassword = async function (password) {
+  const client = this;
 
-  return await bcryptjs.compare(password, user.password);
+  return await bcryptjs.compare(password, client.password);
 };
 
-UserSchema.pre('save', async function (next) {
-  const user = this;
+ClientSchema.pre('save', async function (next) {
+  const client = this;
 
   const salt = await bcryptjs.genSalt(10);
 
-  if (user.isModified('password')) {
-    user.password = await bcryptjs.hash(user.password, salt);
+  if (client.isModified('password')) {
+    client.password = await bcryptjs.hash(client.password, salt);
   }
 
   next();
 });
 
-// userSchema.pre('remove', async function(next) {
-//   const user = this;
+// clientSchema.pre('remove', async function(next) {
+//   const client = this;
 
-//   await Task.deleteMany({owner: user._id});
+//   await Task.deleteMany({owner: client._id});
 
 //   next();
 // });
 
-module.exports = model('User', UserSchema);
+module.exports = model('Client', ClientSchema);

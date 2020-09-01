@@ -1,10 +1,10 @@
-const User = require('../models/User');
+const Client = require('../models/Client');
 
 exports.getUsers = async (req, res) => {
   try {
-    const users = await User.find({});
+    const clients = await Client.find({});
 
-    res.status(200).send(users);
+    res.status(200).send(clients);
   } catch (error) {
     res.status(500).send(e);
   }
@@ -14,8 +14,8 @@ exports.getUser = async (req, res) => {
   const _id = req.params.id;
 
   try {
-    const user = await User.findById(_id);
-    res.status(200).send(user);
+    const client = await Client.findById(_id);
+    res.status(200).send(client);
   } catch (error) {
     res.status(404).send({message: 'User is not found.'});
   }
@@ -23,13 +23,14 @@ exports.getUser = async (req, res) => {
 
 exports.createUser = async (req, res) => {
   const {email, password} = req.body;
-  const newUser = await new User({email, password});
+  const newClient = await new Client({email, password});
 
   try {
     // newUser.password = await newUser.hashedPassword(password);
-    await newUser.save();
-    res.status(200).send({message: newUser});
+    await newClient.save();
+    res.status(200).send({message: newClient});
   } catch (error) {
+    console.log(error);
     if (error.name === 'MongoError' && error.keyPattern.email) {
       res.status(400).send({message: 'Email is already exists.'});
     } else {
@@ -40,23 +41,23 @@ exports.createUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
   const _id = req.params.id;
-  const user = await User.findByIdAndDelete(_id);
+  const client = await Client.findByIdAndDelete(_id);
 
-  if (!user) {
+  if (!client) {
     res
       .status(404)
       .send({message: 'The User was not deleted because it was not found.'});
   }
-  res.status(200).send(user);
+  res.status(200).send(client);
 };
 
 exports.updateUser = async (req, res) => {
   const {firstname, lastname, address} = req.body;
-  const userUpdated = await User.findByIdAndUpdate(req.params.id, {
+  const clinetUpdated = await Client.findByIdAndUpdate(req.params.id, {
     firstname,
     lastname,
     address,
   });
 
-  res.send({message: userUpdated});
+  res.send({message: clinetUpdated});
 };
