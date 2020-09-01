@@ -1,4 +1,9 @@
+const formidable = require('formidable');
+const _ = require('lodash');
+const fs = require('fs');
+
 const Product = require('../models/Product');
+const {fields} = require('../middlewares/multer');
 
 exports.allProducts = async (req, res) => {
   try {
@@ -22,22 +27,52 @@ exports.oneProduct = async (req, res) => {
   }
 };
 
-exports.createProduct = async (req, res) => {
-  const {name, price, quantity, category} = req.body;
-  const product = await new Product({
-    name,
-    price,
-    quantity,
-    idCategory: category,
+exports.createProduct = (req, res) => {
+  let form = new formidable.IncomingForm({
+    multiples: true,
+    keepExtensions: true,
   });
 
-  try {
-    await product.save();
-    console.log(product);
-    res.send(product);
-  } catch (error) {
-    res.status(500).send(error);
-  }
+  form.keepExtensions = true;
+
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      return res.status(400).json({error: 'Image could not be upload.'});
+    }
+
+    const {name, price, quantity, category} = fields;
+
+    let images = [];
+    let product = new Product({
+      name,
+      price,
+      quantity,
+      idCategory: category,
+    });
+
+    if (files.image) {
+      if (files.image > 1000000) {
+        return res
+          .status(400)
+          .json({error: 'Image should be less than 1MB in size'});
+      }
+      files.image.forEach((image) => {
+        console.log(image.path);
+        images.push({
+          data: fs.readFileSync(image.path),
+          contetType: image.type,
+        });
+      });
+    }
+
+    product.image = images;
+    await product.save((err, result) => {
+      if (err) {
+        return res.status(400).json({error: 'Error al crear un producto'});
+      }
+      res.send(result);
+    });
+  });
 };
 
 exports.deleteProduct = async (req, res) => {

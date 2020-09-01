@@ -1,4 +1,5 @@
 const {Schema, model, SchemaType} = require('mongoose');
+const {ObjectId} = Schema;
 
 const productSchema = new Schema(
   {
@@ -6,8 +7,8 @@ const productSchema = new Schema(
     price: {type: Number, required: true, trim: true},
     description: {type: String},
     quantity: {type: Number, required: true, trim: true},
-    idImage: [{type: Schema.Types.ObjectId}],
-    idCategory: [{type: Schema.Types.ObjectId, require: true}],
+    image: [{data: Buffer, contentType: String}],
+    idCategory: [{type: ObjectId, ref: 'Category', required: true}],
   },
   {timestamps: true}
 );

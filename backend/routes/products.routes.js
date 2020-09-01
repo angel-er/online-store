@@ -2,6 +2,7 @@ const {Router} = require('express');
 const router = Router();
 
 const {ProductsController} = require('../controllers');
+const upload = require('../middlewares/multer');
 
 module.exports = (() => {
   router.get('/', ProductsController.allProducts);
