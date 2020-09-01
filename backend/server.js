@@ -21,6 +21,7 @@ server.use('/api/categories', CategoryRouter);
 
 // Static
 console.log(path.join(__dirname, '../frontend/public'));
+// server.use()
 server.get('/', (req, res) => {
   res.send({message: 'Welcome'});
 });
