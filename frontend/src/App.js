@@ -1,23 +1,20 @@
-import React from 'react';
-import './App.css';
+import React, {Fragment} from 'react';
+import {BrowserRouter} from 'react-router-dom';
+import {Provider} from 'react-redux';
+
+import {store} from './redux/store';
+import Routes from './router';
+import AppProvider from './AppProvider';
 
 function App() {
   return (
-    <div className='App'>
-      <header className='App-header'>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className='App-link'
-          href='https://reactjs.org'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Provider store={store}>
+        <AppProvider>
+          <Routes />
+        </AppProvider>
+      </Provider>
+    </BrowserRouter>
   );
 }
 

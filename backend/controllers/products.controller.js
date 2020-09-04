@@ -3,6 +3,7 @@ const _ = require('lodash');
 const fs = require('fs');
 
 const Product = require('../models/Product');
+const Image = require('../models/Image');
 const {fields} = require('../middlewares/multer');
 
 exports.allProducts = async (req, res) => {
@@ -56,16 +57,33 @@ exports.createProduct = (req, res) => {
           .status(400)
           .json({error: 'Image should be less than 1MB in size'});
       }
-      files.image.forEach((image) => {
-        console.log(image.path);
-        images.push({
-          data: fs.readFileSync(image.path),
-          contetType: image.type,
-        });
-      });
-    }
 
-    product.image = images;
+      if (Array.isArray(files.image)) {
+        images = files.image.map((image) => {
+          return {
+            data: fs.readFileSync(image.path),
+            contetType: image.type,
+          };
+        });
+      } else {
+        images = [
+          {
+            data: fs.readFileSync(files.image.path),
+            contetType: files.image.type,
+          },
+        ];
+      }
+    }
+    const image = await new Image({image: images});
+
+    await image.save((err, image) => {
+      if (err) {
+        return res.status(400).json({error: 'Error to create image'});
+      }
+    });
+
+    product.idImage = image._id;
+
     await product.save((err, result) => {
       if (err) {
         return res.status(400).json({error: 'Error al crear un producto'});
